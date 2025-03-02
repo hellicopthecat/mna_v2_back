@@ -46,6 +46,6 @@ export class Salary {
   simplifiedTax: number;
   @Column()
   childTax: number;
-  @ManyToOne(() => User, (user) => user.salary)
-  user: User;
+  // @ManyToOne(() => User, (user) => user.salary)
+  // user: User;
 }

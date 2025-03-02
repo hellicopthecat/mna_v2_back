@@ -13,12 +13,13 @@ import { IncomeExpendModule } from './income-expend/income-expend.module';
 import { EquityLiabilitiesModule } from './equity-liabilities/equity-liabilities.module';
 import { CompanyAssetsModule } from './company-assets/company-assets.module';
 import { AuthModule } from './auth/auth.module';
+import { Company } from './company/entities/company.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'sqlite',
-      entities: [User, Salary],
+      entities: [User, Company, Salary],
       database: 'db.db',
       synchronize: true,
     }),

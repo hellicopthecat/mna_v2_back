@@ -13,7 +13,7 @@ async function bootstrap() {
       cookie: {
         httpOnly: true,
         sameSite: true,
-        secure: true,
+        secure: process.env.NODE_ENV === 'production',
       },
     }),
   );

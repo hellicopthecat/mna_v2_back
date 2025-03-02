@@ -1,7 +1,8 @@
-import { Controller, Post, Body, Session } from '@nestjs/common';
+import { Controller, Post, Body, Session, Get } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LogInDto } from './dto/log-in.dto';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { AuthDecorator } from './auth-decorator/auth-decorator.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -14,7 +15,7 @@ export class AuthController {
   ) {
     const userId = await this.authService.create(createAuthDto);
     session.uid = userId;
-    return;
+    return userId;
   }
   @Post('/login')
   async login(
@@ -23,6 +24,19 @@ export class AuthController {
   ) {
     const userId = await this.authService.logIn(logInDto);
     session.uid = userId;
-    return;
+    return userId;
+  }
+  @Post('/logout')
+  logOut(@Session() session: Record<string, any>) {
+    session.uid = null;
+    if (!session.uid) {
+      return {
+        ok: true,
+      };
+    }
+  }
+  @Get('/myprofile')
+  async getMyProfile(@AuthDecorator() userId: string) {
+    return await this.authService.getMyProfile(Number(userId));
   }
 }

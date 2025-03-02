@@ -10,7 +10,6 @@ import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { randomBytes, scrypt as _scrypt } from 'crypto';
 import { promisify } from 'util';
-import { UserService } from 'src/user/user.service';
 const scrypt = promisify(_scrypt);
 
 @Injectable()
@@ -18,6 +17,7 @@ export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
+  //Create
   async create(createUserDto: CreateUserDto) {
     const existsUser = await this.userRepository.findOneBy({
       email: createUserDto.email,
@@ -51,5 +51,12 @@ export class AuthService {
       throw new BadRequestException('비밀번호가 일치하지 않습니다.');
     }
     return user.id;
+  }
+  async getMyProfile(id: number) {
+    if (!id) {
+      throw new BadRequestException('로그인을 해주세요.');
+    }
+    const user = await this.userRepository.findOneBy({ id });
+    return user;
   }
 }
