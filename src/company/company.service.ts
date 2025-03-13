@@ -14,7 +14,7 @@ import { UserService } from 'src/user/user.service';
 export class CompanyService {
   constructor(
     @InjectRepository(Company) private companyRepo: Repository<Company>,
-    private userService: UserService,
+    private readonly userService: UserService,
   ) {}
   // 회사생성
   async createCompany(createCompanyDto: CreateCompanyDto, userId: number) {
@@ -22,7 +22,7 @@ export class CompanyService {
       companyName: createCompanyDto.companyName,
     });
     if (existsCompany) {
-      return new BadRequestException('존재하는 회사입니다.');
+      throw new BadRequestException('존재하는 회사입니다.');
     }
     const user = await this.userService.findOne(userId);
     const company = this.companyRepo.create({
@@ -41,7 +41,15 @@ export class CompanyService {
   async findOneCompany(id: number) {
     const company = await this.companyRepo.findOne({ where: { id } });
     if (!company) {
-      return new NotFoundException('찾으시는 회사가 존재하지 않습니다.');
+      throw new NotFoundException('찾으시는 회사가 존재하지 않습니다.');
+    }
+    return company;
+  }
+  // 이름으로 회사 찾기
+  async findONeByName(name: string) {
+    const company = await this.companyRepo.findOneBy({ companyName: name });
+    if (!company) {
+      throw new NotFoundException('찾으시는 회사가 존재하지 않습니다.');
     }
     return company;
   }
@@ -61,29 +69,5 @@ export class CompanyService {
     }
     await this.companyRepo.delete({ id });
     return { msg: '회사가 삭제되었습니다.' };
-  }
-  //매니저 추가
-  async addManager(id: number, workerId: number) {
-    const worker = await this.userService.findOne(workerId);
-    const company = await this.companyRepo.findOne({ where: { id } });
-    if (!company) {
-      return new NotFoundException('회사가 존재하지 않습니다.');
-    }
-    company?.companyManager.push(worker);
-    await this.companyRepo.save(company);
-    return { msg: '매니저가 추가되었습니다.' };
-  }
-  //매니저 삭제
-  async removeManager(id: number, workerId: number) {
-    const worker = await this.userService.findOne(workerId);
-    const company = await this.companyRepo.findOne({ where: { id } });
-    if (!company) {
-      return new NotFoundException('회사가 존재하지 않습니다.');
-    }
-    company.companyManager = company.companyManager.filter(
-      (user) => user.id === worker.id,
-    );
-    await this.companyRepo.save(company);
-    return { msg: '매니저가 성공적으로 삭제되었습니다.' };
   }
 }

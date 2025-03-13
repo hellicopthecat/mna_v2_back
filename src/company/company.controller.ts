@@ -20,7 +20,7 @@ import { AuthDecorator } from 'src/auth/auth-decorator/auth-decorator.decorator'
 @UseGuards(AuthGuard)
 export class CompanyController {
   constructor(private readonly companyService: CompanyService) {}
-
+  // 회사생성
   @Post()
   create(
     @Body() createCompanyDto: CreateCompanyDto,
@@ -28,35 +28,31 @@ export class CompanyController {
   ) {
     return this.companyService.createCompany(createCompanyDto, Number(userId));
   }
-
+  // 전체회사찾기
   @Get()
   findAll() {
     return this.companyService.findAllCompany();
   }
-
+  // id로 회사 찾기
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.companyService.findOneCompany(+id);
   }
+  // 이름으로 회사 찾기
+  @Get(':name')
+  findOneByName(@Param('name') name: string) {
+    return this.companyService.findONeByName(name);
+  }
+  //회사정보수정
   @Patch(':id')
   @UseGuards(ManagerGuard)
   update(@Param('id') id: string, @Body() updateCompanyDto: UpdateCompanyDto) {
     return this.companyService.updateCompany(+id, updateCompanyDto);
   }
-
+  //회사 삭제
   @Delete(':id')
   @UseGuards(OwnerGuard)
   remove(@Param('id') id: string) {
     return this.companyService.removeCompany(+id);
-  }
-  @Patch(':id')
-  @UseGuards(ManagerGuard)
-  addManager(@Param('id') id: string, workerId: string) {
-    return this.companyService.addManager(Number(id), Number(workerId));
-  }
-  @Patch(':id')
-  @UseGuards(ManagerGuard)
-  removeManager(@Param('id') id: string, workerId: string) {
-    return this.companyService.removeManager(Number(id), Number(workerId));
   }
 }

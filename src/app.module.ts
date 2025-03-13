@@ -10,16 +10,33 @@ import { CompanyModule } from './company/company.module';
 import { VacationModule } from './vacation/vacation.module';
 import { ProductModule } from './product/product.module';
 import { IncomeExpendModule } from './income-expend/income-expend.module';
-import { EquityLiabilitiesModule } from './equity-liabilities/equity-liabilities.module';
 import { CompanyAssetsModule } from './company-assets/company-assets.module';
 import { AuthModule } from './auth/auth.module';
 import { Company } from './company/entities/company.entity';
+import { AssetsLiabilitiesModule } from './assets-liabilities/assets-liabilities.module';
+import { CompanyAsset } from './company-assets/entities/company-asset.entity';
+import { AssetsLiability } from './assets-liabilities/entities/assets-liability.entity';
+import { IncomeExpend } from './income-expend/entities/income-expend.entity';
+import { Vacation } from './vacation/entities/vacation.entity';
+import { Product } from './product/entities/product.entity';
+import { VacationDescModule } from './vacation-desc/vacation-desc.module';
+import { VacationDesc } from './vacation-desc/entities/vacation-desc.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'sqlite',
-      entities: [User, Company, Salary],
+      entities: [
+        User,
+        Company,
+        CompanyAsset,
+        AssetsLiability,
+        IncomeExpend,
+        Product,
+        Salary,
+        Vacation,
+        VacationDesc,
+      ],
       database: 'db.db',
       synchronize: true,
     }),
@@ -29,9 +46,10 @@ import { Company } from './company/entities/company.entity';
     VacationModule,
     ProductModule,
     IncomeExpendModule,
-    EquityLiabilitiesModule,
     CompanyAssetsModule,
     AuthModule,
+    AssetsLiabilitiesModule,
+    VacationDescModule,
   ],
   controllers: [AppController],
   providers: [AppService],

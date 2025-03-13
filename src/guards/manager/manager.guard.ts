@@ -1,4 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import { Session } from 'express-session';
@@ -15,13 +20,16 @@ export class ManagerGuard implements CanActivate {
     const session = req.session as Session & { uid: string };
 
     if (!session.uid) {
-      return false;
+      throw new BadRequestException('로그인을 하세요.');
     }
     const manager = await this.companyRepo.findOne({
       where: { companyManager: { id: Number(session.uid) } },
       select: { id: true },
     });
+    if (!manager) {
+      throw new BadRequestException('매니저가 아닙니다.');
+    }
 
-    return Boolean(manager!.id);
+    return Boolean(manager.id);
   }
 }

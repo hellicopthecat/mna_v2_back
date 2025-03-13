@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   CanActivate,
   ExecutionContext,
   Injectable,
@@ -22,7 +23,7 @@ export class OwnerGuard implements CanActivate {
     if (!uid) {
       return false;
     }
-    const isManger = await this.companyRepo.findOne({
+    const isOwner = await this.companyRepo.findOne({
       where: {
         id: Number(id),
         companyOwner: { id: Number(uid) },
@@ -31,6 +32,9 @@ export class OwnerGuard implements CanActivate {
         id: true,
       },
     });
-    return Boolean(isManger);
+    if (!isOwner) {
+      throw new BadRequestException('권한이 없습니다.');
+    }
+    return Boolean(isOwner);
   }
 }

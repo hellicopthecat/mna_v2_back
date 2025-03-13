@@ -1,5 +1,6 @@
 import { Company } from 'src/company/entities/company.entity';
 import { Salary } from 'src/salary/entities/salary.entity';
+import { Vacation } from 'src/vacation/entities/vacation.entity';
 import {
   Column,
   CreateDateColumn,
@@ -35,6 +36,10 @@ export class User {
   @ManyToMany(() => Company, (company) => company.companyManager)
   @JoinTable({ name: 'managedCompanyId' })
   managedCompany: Company[];
-  // @OneToMany(() => Salary, (salary) => salary.user)
-  // salary: Salary[];
+  @ManyToOne(() => Company, (company) => company.companyWorker)
+  workAtCompany: Company[];
+  @OneToMany(() => Salary, (salary) => salary.user)
+  salary: Salary[];
+  @OneToMany(() => Vacation, (vacation) => vacation.user)
+  vacation: Vacation[];
 }

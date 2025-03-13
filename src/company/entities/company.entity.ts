@@ -1,3 +1,5 @@
+import { CompanyAsset } from 'src/company-assets/entities/company-asset.entity';
+import { Product } from 'src/product/entities/product.entity';
 import { User } from 'src/user/entities/user.entity';
 import {
   Column,
@@ -5,6 +7,7 @@ import {
   Entity,
   ManyToMany,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -35,18 +38,16 @@ export class Company {
   addressNum: string;
   @ManyToMany(() => User, (user) => user.managedCompany)
   companyManager: User[];
-  // @OneToMany(() => User, (user) => user.id)
-  // companyWorker: User[];
-  // @ManyToMany(() => Company, (com) => com.id)
-  // connectedCompany: Company[];
-  // @Column()
-  // connectedCompanyCount: number;
-  // @ManyToMany(() => Company, (com) => com.id)
-  // connectingCompany: Company[];
-  // @Column()
-  // connectingCompanyCount: number;
-  // companyProduct: [Product]
-  // inNout: InNout!
+  @OneToMany(() => User, (user) => user.workAtCompany)
+  companyWorker: User[];
+  @ManyToMany(() => Company, (company) => company.connectingCompany)
+  connectedCompany: Company[];
+  @ManyToMany(() => Company, (company) => company.connectedCompany)
+  connectingCompany: Company[];
+  @OneToOne(() => CompanyAsset, (companyAsset) => companyAsset.company)
+  companyAssets: CompanyAsset;
+  @OneToMany(() => Product, (product) => product.company)
+  companyProduct: Product[];
   // workerVacation: [Vacation]
   // workerSalary: [Salary]
 }

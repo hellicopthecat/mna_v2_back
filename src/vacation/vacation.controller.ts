@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { VacationService } from './vacation.service';
 import { CreateVacationDto } from './dto/create-vacation.dto';
 import { UpdateVacationDto } from './dto/update-vacation.dto';
@@ -8,27 +16,39 @@ export class VacationController {
   constructor(private readonly vacationService: VacationService) {}
 
   @Post()
-  create(@Body() createVacationDto: CreateVacationDto) {
-    return this.vacationService.create(createVacationDto);
+  createVacation(
+    @Param('userId') userId: string,
+    @Body() createVacationDto: CreateVacationDto,
+  ) {
+    return this.vacationService.createVacation(
+      Number(userId),
+      createVacationDto,
+    );
   }
 
   @Get()
-  findAll() {
-    return this.vacationService.findAll();
+  findAllVacation() {
+    return this.vacationService.findAllVacation();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.vacationService.findOne(+id);
+  findOneVacation(@Param('id') id: string) {
+    return this.vacationService.findOneVacation(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateVacationDto: UpdateVacationDto) {
-    return this.vacationService.update(+id, updateVacationDto);
+  @Patch(':vacationId')
+  updateVacation(
+    @Param('vacationId') vacationId: string,
+    @Body() updateVacationDto: UpdateVacationDto,
+  ) {
+    return this.vacationService.updateVacation(
+      Number(vacationId),
+      updateVacationDto,
+    );
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.vacationService.remove(+id);
+  removeVacation(@Param('id') id: string) {
+    return this.vacationService.removeVacation(+id);
   }
 }
