@@ -22,6 +22,8 @@ export class IncomeExpendService {
       await this.companyAssetService.findCompanyAsset(companyAssetId);
     const incomeExpend = this.incomeExpendRepo.create({
       ...createIncomeExpendDto,
+      cost: Number(createIncomeExpendDto.cost),
+      incomeTrue: createIncomeExpendDto.incomeTrue === 'on' ? true : false,
       companyAsset,
     });
     await this.incomeExpendRepo.save(incomeExpend);
@@ -31,9 +33,27 @@ export class IncomeExpendService {
   async findOneInEx(companyId: number) {
     return await this.incomeExpendRepo.findOneBy({ id: companyId });
   }
+  async findTotalInEx(assetId: number) {
+    const data = await this.incomeExpendRepo
+      .createQueryBuilder('inex')
+      .leftJoinAndSelect('inex.companyAsset', 'companyAsset')
+      .where('inex.companyAsset.id = :id', { id: assetId })
+      .skip(0)
+      .take(5)
+      .orderBy('inex.companyAsset.id', 'DESC')
+      .getMany();
+    return data;
+  }
 
   async updateInEx(ieId: number, updateIncomeExpendDto: UpdateIncomeExpendDto) {
-    await this.incomeExpendRepo.update({ id: ieId }, updateIncomeExpendDto);
+    await this.incomeExpendRepo.update(
+      { id: ieId },
+      {
+        ...updateIncomeExpendDto,
+        cost: Number(updateIncomeExpendDto.cost),
+        incomeTrue: updateIncomeExpendDto.incomeTrue === 'on' ? true : false,
+      },
+    );
     return { msg: '수입지출데이터가 수정되었습니다.' };
   }
 

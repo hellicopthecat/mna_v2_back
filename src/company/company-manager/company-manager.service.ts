@@ -33,7 +33,7 @@ export class CompanyManagerService {
     if (!company) {
       return new NotFoundException('회사가 존재하지 않습니다.');
     }
-    company?.companyManager.push(worker);
+    company.companyManager.push(worker);
     await this.companyRepo.save(company);
     return { msg: '매니저가 추가되었습니다.' };
   }

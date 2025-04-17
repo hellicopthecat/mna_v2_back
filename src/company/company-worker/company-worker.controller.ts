@@ -9,39 +9,66 @@ import {
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { CompanyWorkerService } from './company-worker.service';
 import { ManagerGuard } from 'src/guards/manager/manager.guard';
+import { AuthDecorator } from 'src/auth/auth-decorator/auth-decorator.decorator';
 
-@Controller('company')
+@Controller('company-workers')
 @UseGuards(AuthGuard)
 export class CompanyWorkerController {
   constructor(private readonly companyWorkerService: CompanyWorkerService) {}
   //회사 사원 불러오기
-  @Get('/:id/company-worker')
-  async getCompanyWorkers(@Param('id') id: string) {
-    return await this.companyWorkerService.getCompanyWorkers(Number(id));
+  @Get(':companyId')
+  async getCompanyWorkers(@Param('companyId') comapnyId: string) {
+    return await this.companyWorkerService.getCompanyWorkers(Number(comapnyId));
+  }
+  @Get(':companyId/vacations')
+  @UseGuards(ManagerGuard)
+  async getCompanyWorkersVacation(@Param('companyId') comapnyId: string) {
+    return await this.companyWorkerService.getCompanyWorkersVacation(
+      Number(comapnyId),
+    );
+  }
+  @Get(':companyId/myVacation')
+  async getThisCompanyVacation(
+    @Param('companyId') companyId: string,
+    @AuthDecorator() token: string,
+  ) {
+    return await this.companyWorkerService.getThisCompanyVacation(
+      Number(companyId),
+      token,
+    );
   }
   //사원 이름으로 조회
-  @Get('/:id/company-worker')
-  async getCompanyWorkerByName(@Param('id') id: string, name: string) {
+  @Get(':companyId')
+  async getCompanyWorkerByName(
+    @Param('companyId') comapnyId: string,
+    name: string,
+  ) {
     return await this.companyWorkerService.getCompanyWorkersByName(
-      Number(id),
+      Number(comapnyId),
       name,
     );
   }
   //사원 등록
-  @Patch('/:id/company-worker')
+  @Patch(':companyId')
   @UseGuards(ManagerGuard)
-  async registCompanyWorkers(@Param('id') id: string, workerID: string) {
+  async registCompanyWorkers(
+    @Param('companyId') comapnyId: string,
+    workerID: string,
+  ) {
     return await this.companyWorkerService.registCompanyWorkers(
-      Number(id),
+      Number(comapnyId),
       Number(workerID),
     );
   }
   //사원 등록 해제
-  @Delete('/:id/company-worker')
+  @Delete(':companyId')
   @UseGuards(ManagerGuard)
-  async removeCompanyWorkers(@Param('id') id: string, workerID: string) {
+  async removeCompanyWorkers(
+    @Param('companyId') comapnyId: string,
+    workerID: string,
+  ) {
     return await this.companyWorkerService.removeCompanyWorkers(
-      Number(id),
+      Number(comapnyId),
       Number(workerID),
     );
   }

@@ -3,11 +3,12 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
-  ParamData,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
-import { Session } from 'express-session';
+import { TokenService } from 'src/auth/token.service';
+
 import { Company } from 'src/company/entities/company.entity';
 import { Repository } from 'typeorm';
 
@@ -15,18 +16,23 @@ import { Repository } from 'typeorm';
 export class OwnerGuard implements CanActivate {
   constructor(
     @InjectRepository(Company) private companyRepo: Repository<Company>,
+    private readonly tokenService: TokenService,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req: Request = context.switchToHttp().getRequest();
-    const { id } = req.params as ParamData & { id: string };
-    const { uid } = req.session as Session & { uid: string };
-    if (!uid) {
-      return false;
+    const { id } = req.params as { id: string };
+    const refreshToken = (req.cookies as { REFRESH_TOKEN: string })
+      .REFRESH_TOKEN;
+    const { userId } =
+      await this.tokenService.verifiedRefreshToken(refreshToken);
+
+    if (!userId) {
+      throw new UnauthorizedException('로그인하세요.');
     }
     const isOwner = await this.companyRepo.findOne({
       where: {
         id: Number(id),
-        companyOwner: { id: Number(uid) },
+        companyOwner: { id: Number(userId) },
       },
       select: {
         id: true,

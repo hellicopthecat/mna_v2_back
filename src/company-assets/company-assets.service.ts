@@ -24,25 +24,20 @@ export class CompanyAssetsService {
       company,
     });
     await this.companyAssetRepo.save(companyAsset);
-    return { msg: '자산정보서비스가 생성되었습니다.' };
+    return { companyId: company.id };
   }
-  async findOneCompanyAsset(companyAssetId: number) {
-    const companyAsset = await this.companyAssetRepo.findOneBy({
-      id: companyAssetId,
+
+  async findCompanyAsset(assetId: number) {
+    const companyAsset = await this.companyAssetRepo.findOne({
+      where: {
+        id: assetId,
+      },
+      relations: { totalAssetsDesc: true },
     });
     if (!companyAsset) {
-      throw new NotFoundException('회사자산정보를 생성하세요.');
-    }
-    return companyAsset;
-  }
-  async findCompanyAsset(companyId: number) {
-    const companyAssets = await this.companyAssetRepo.findOneBy({
-      id: companyId,
-    });
-    if (!companyAssets) {
       throw new NotFoundException('자산정보를 생성하세요.');
     }
-    return companyAssets;
+    return companyAsset;
   }
 
   async updateCompanyAsset(
@@ -54,7 +49,7 @@ export class CompanyAssetsService {
   }
 
   async removeCompanyAsset(companyAssetId: number) {
-    await this.findOneCompanyAsset(companyAssetId);
+    await this.findCompanyAsset(companyAssetId);
     await this.companyAssetRepo.delete({ id: companyAssetId });
     return { msg: '자산정보서비스가 삭제되었습니다.' };
   }

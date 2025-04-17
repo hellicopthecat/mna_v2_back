@@ -8,6 +8,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -23,6 +24,7 @@ export class CompanyAsset {
   @UpdateDateColumn()
   updateAt: Date;
   @OneToOne(() => Company, (company) => company.companyAssets)
+  @JoinColumn()
   company: Company;
   @Column()
   budget: number; //예산
@@ -186,28 +188,24 @@ export class CompanyAsset {
   }
   // 재무지표
   // 자기자본비율
-  @Column({ type: 'decimal', precision: 10, scale: 3 })
   get equityRatio(): string {
     const capital = BigInt(this.totalAssets) - BigInt(this.liabilities);
     const result = (capital / BigInt(this.totalAssets)) * BigInt(100);
     return result.toString();
   }
   // 이익률
-  @Column({ type: 'decimal', precision: 10, scale: 3 })
   get profitMargin(): string {
     const result =
       (BigInt(this.incomeMoney) / BigInt(this.liabilities)) * BigInt(100);
     return result.toString();
   }
   // 부채비율
-  @Column({ type: 'decimal', precision: 10, scale: 3 })
   get debtRatio(): string {
     const result =
       (BigInt(this.liabilities) / BigInt(this.totalAssets)) * BigInt(100);
     return result.toString();
   }
   // 자기자본이익률
-  @Column({ type: 'decimal', precision: 10, scale: 3 })
   get roe(): string {
     const result =
       (BigInt(this.netIncome) / BigInt(this.netAssets)) * BigInt(100);

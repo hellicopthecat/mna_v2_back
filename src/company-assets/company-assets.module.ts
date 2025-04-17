@@ -10,6 +10,7 @@ import { UserService } from 'src/user/user.service';
 import { AssetsLiability } from 'src/assets-liabilities/entities/assets-liability.entity';
 import { IncomeExpendService } from 'src/income-expend/income-expend.service';
 import { IncomeExpend } from 'src/income-expend/entities/income-expend.entity';
+import { TokenService } from 'src/auth/token.service';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { IncomeExpend } from 'src/income-expend/entities/income-expend.entity';
     CompanyService,
     UserService,
     IncomeExpendService,
+    TokenService,
   ],
   exports: [CompanyAssetsService],
 })

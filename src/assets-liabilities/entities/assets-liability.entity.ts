@@ -25,7 +25,7 @@ export class AssetsLiability {
   @Column()
   current: boolean; // true =  유동자산 or false = 부동자산
   @Column()
-  assetOrLiability: boolean; // true = 자산 or false = 부채
+  assetOrLiability: boolean; // true = 자산  or false = 부채
   @Column({ type: 'decimal', precision: 20, scale: 0 })
   assetValue: string;
   @ManyToOne(() => CompanyAsset, (asset) => asset.totalAssetsDesc)

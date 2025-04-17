@@ -38,6 +38,11 @@ export class AssetsLiabilitiesController {
     return this.assetsLiabilitiesService.findOne(Number(assetId));
   }
 
+  @Get('totalAsset/:assetId')
+  findTotalAsset(@Param('assetId') assetId: string) {
+    return this.assetsLiabilitiesService.findTotalAsset(Number(assetId));
+  }
+
   @Patch(':assetId')
   update(
     @Param('assetId') assetId: string,

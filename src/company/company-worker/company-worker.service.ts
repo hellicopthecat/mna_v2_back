@@ -8,18 +8,35 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Company } from '../entities/company.entity';
 import { Repository } from 'typeorm';
 import { UserService } from 'src/user/user.service';
+import { TokenService } from 'src/auth/token.service';
 
 @Injectable()
 export class CompanyWorkerService {
   constructor(
     private readonly userService: UserService,
     private readonly companyService: CompanyService,
+    private readonly tokenService: TokenService,
     @InjectRepository(Company) private companyRepo: Repository<Company>,
   ) {}
   //사원 조회
-  async getCompanyWorkers(id: number) {
-    const company = await this.companyService.findOneCompany(id);
+  async getCompanyWorkers(comapnyId: number) {
+    const company = await this.companyService.findOneCompany(comapnyId);
     return company?.companyWorker;
+  }
+  async getCompanyWorkersVacation(comapnyId: number) {
+    const company = await this.companyService.findOneCompany(comapnyId);
+    return company?.workerVacation;
+  }
+  async getThisCompanyVacation(companyId: number, token: string) {
+    const company = await this.companyService.findOneCompany(companyId);
+    const { userId } = await this.tokenService.verifiedRefreshToken(token);
+    const myVacation = company.workerVacation.find(
+      (val) => val.id === Number(userId),
+    );
+    if (!myVacation) {
+      throw new NotFoundException('휴가가 생성되지 않았습니다.');
+    }
+    return myVacation;
   }
   //사원 이름으로 조회
   async getCompanyWorkersByName(id: number, name: string) {
@@ -29,6 +46,7 @@ export class CompanyWorkerService {
     );
     return worker;
   }
+
   //사원 등록
   async registCompanyWorkers(id: number, workerID: number) {
     const company = await this.companyService.findOneCompany(id);

@@ -9,6 +9,7 @@ import { CompanyAssetsService } from 'src/company-assets/company-assets.service'
 import { CompanyService } from 'src/company/company.service';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/entities/user.entity';
+import { TokenService } from 'src/auth/token.service';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { User } from 'src/user/entities/user.entity';
     CompanyAssetsService,
     CompanyService,
     UserService,
+    TokenService,
   ],
 })
 export class AssetsLiabilitiesModule {}

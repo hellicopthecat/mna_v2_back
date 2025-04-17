@@ -1,15 +1,25 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Request } from 'express';
-import { Session } from 'express-session';
+
 import { Observable } from 'rxjs';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   canActivate(
-    context: ExecutionContext,
+    ctx: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const req: Request = context.switchToHttp().getRequest();
-    const { uid } = req.session as Session & Partial<{ uid: string }>;
-    return Boolean(uid);
+    const req: Request = ctx.switchToHttp().getRequest();
+    const authToken = req.headers.authorization;
+    const token = authToken?.split(' ')[1];
+    if (!token) {
+      throw new UnauthorizedException('로그인이 안되었습니다...');
+    }
+
+    return Boolean(token);
   }
 }

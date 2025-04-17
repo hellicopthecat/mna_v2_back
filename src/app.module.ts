@@ -21,6 +21,7 @@ import { Vacation } from './vacation/entities/vacation.entity';
 import { Product } from './product/entities/product.entity';
 import { VacationDescModule } from './vacation-desc/vacation-desc.module';
 import { VacationDesc } from './vacation-desc/entities/vacation-desc.entity';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { VacationDesc } from './vacation-desc/entities/vacation-desc.entity';
     AuthModule,
     AssetsLiabilitiesModule,
     VacationDescModule,
+    ConfigModule.forRoot({ envFilePath: ['.env.development.local'] }),
   ],
   controllers: [AppController],
   providers: [AppService],

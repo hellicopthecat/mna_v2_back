@@ -17,7 +17,10 @@ export class UserController {
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
   }
-
+  @Get(':username')
+  findOneByUserName(@Param('username') username: string) {
+    return this.userService.findOneByUserName(username);
+  }
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);

@@ -1,13 +1,13 @@
-import { IsBoolean, IsEnum, IsNumber, IsString } from 'class-validator';
+import { IsEnum, IsString } from 'class-validator';
 import { TPaymentSwitch } from '../entities/income-expend.entity';
 
 export class CreateIncomeExpendDto {
-  @IsBoolean()
-  incomeTrue: boolean;
+  @IsString()
+  incomeTrue: string;
   @IsString()
   title: string;
-  @IsNumber()
-  cost: number;
+  @IsString()
+  cost: string;
   @IsString()
   businessDate: string;
   @IsString()

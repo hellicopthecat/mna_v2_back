@@ -5,9 +5,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinTable,
   ManyToMany,
-  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -33,10 +31,15 @@ export class User {
   password: string;
   @Column()
   phone: string;
+  @Column({ default: '' })
+  avatarUrl: string;
+  @Column({ default: '' })
+  refreshToken: string;
+  @OneToMany(() => Company, (company) => company.companyOwner)
+  ownedCompany: Company[];
   @ManyToMany(() => Company, (company) => company.companyManager)
-  @JoinTable({ name: 'managedCompanyId' })
   managedCompany: Company[];
-  @ManyToOne(() => Company, (company) => company.companyWorker)
+  @ManyToMany(() => Company, (company) => company.companyWorker)
   workAtCompany: Company[];
   @OneToMany(() => Salary, (salary) => salary.user)
   salary: Salary[];

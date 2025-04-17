@@ -6,13 +6,23 @@ export class CreateCompanyDto {
   @IsString()
   companyLogo: string;
   @IsString()
-  country: string;
+  zonecode: string;
   @IsString()
-  addressCity: string;
+  sido: string;
   @IsString()
-  streetAddress: string;
+  sigungu: string;
+  @IsString()
+  roadname: string;
+  @IsString()
+  roadAddress: string;
   @IsString()
   restAddress: string;
-  @IsString()
-  addressNum: string;
+  @IsString({})
+  bname: string;
+  @IsString({})
+  bname1: string;
+  @IsString({})
+  bname2: string;
+  @IsString({})
+  jibunAddress: string;
 }

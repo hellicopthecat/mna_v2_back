@@ -20,7 +20,7 @@ import { ManagerGuard } from 'src/guards/manager/manager.guard';
 export class CompanyAssetsController {
   constructor(private readonly companyAssetsService: CompanyAssetsService) {}
 
-  @Post()
+  @Post(':companyId')
   createCompanyAsset(
     @Param('companyId') companyId: string,
     @Body() createCompanyAssetDto: CreateCompanyAssetDto,
@@ -31,7 +31,7 @@ export class CompanyAssetsController {
     );
   }
 
-  @Get()
+  @Get(':companyId')
   findCompanyAsset(@Param('companyId') companyId: string) {
     return this.companyAssetsService.findCompanyAsset(Number(companyId));
   }

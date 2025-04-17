@@ -1,3 +1,4 @@
+import { Company } from 'src/company/entities/company.entity';
 import { User } from 'src/user/entities/user.entity';
 import { VacationDesc } from 'src/vacation-desc/entities/vacation-desc.entity';
 import {
@@ -35,5 +36,6 @@ export class Vacation {
   description: VacationDesc[];
   @ManyToOne(() => User, (user) => user.vacation)
   user: User;
-  //   company: Company!;
+  @ManyToOne(() => Company, (company) => company.workerVacation)
+  company: Company;
 }

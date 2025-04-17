@@ -20,35 +20,39 @@ import { ManagerGuard } from 'src/guards/manager/manager.guard';
 export class IncomeExpendController {
   constructor(private readonly incomeExpendService: IncomeExpendService) {}
 
-  @Post(':companyAssetId')
+  @Post(':assetId')
   create(
-    @Param('companyAssetId') companyAssetId: string,
+    @Param('assetId') assetId: string,
     @Body() createIncomeExpendDto: CreateIncomeExpendDto,
   ) {
     return this.incomeExpendService.createInEx(
-      Number(companyAssetId),
+      Number(assetId),
       createIncomeExpendDto,
     );
   }
 
-  @Get(':companyAssetId')
-  findOneInEx(@Param('companyAssetId') companyAssetId: string) {
-    return this.incomeExpendService.findOneInEx(Number(companyAssetId));
+  @Get(':assetId')
+  findOneInEx(@Param('assetId') assetId: string) {
+    return this.incomeExpendService.findOneInEx(Number(assetId));
+  }
+  @Get('totalInEx/:assetId')
+  async findTotalInEx(@Param('assetId') assetId: string) {
+    return this.incomeExpendService.findTotalInEx(Number(assetId));
   }
 
-  @Patch(':companyAssetId')
+  @Patch(':assetId')
   update(
-    @Param('companyAssetId') companyAssetId: string,
+    @Param('assetId') assetId: string,
     @Body() updateIncomeExpendDto: UpdateIncomeExpendDto,
   ) {
     return this.incomeExpendService.updateInEx(
-      Number(companyAssetId),
+      Number(assetId),
       updateIncomeExpendDto,
     );
   }
 
-  @Delete(':companyAssetId')
-  remove(@Param('companyAssetId') companyAssetId: string) {
-    return this.incomeExpendService.removeInEx(Number(companyAssetId));
+  @Delete(':assetId')
+  remove(@Param('assetId') assetId: string) {
+    return this.incomeExpendService.removeInEx(Number(assetId));
   }
 }

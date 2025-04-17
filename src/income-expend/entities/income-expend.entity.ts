@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -43,6 +44,7 @@ export class IncomeExpend {
   paymentsDone: TPaymentSwitch;
   @ManyToOne(() => CompanyAsset, (asset) => asset.allIncomeExpend)
   companyAsset: CompanyAsset;
-  @OneToOne(() => Product, (product) => product.incomeExpend)
+  @OneToOne(() => Product, (product) => product.incomeExpend, { cascade: true })
+  @JoinColumn()
   product: Product;
 }

@@ -24,9 +24,9 @@ export class CompanyController {
   @Post()
   create(
     @Body() createCompanyDto: CreateCompanyDto,
-    @AuthDecorator() userId: string,
+    @AuthDecorator() token: string,
   ) {
-    return this.companyService.createCompany(createCompanyDto, Number(userId));
+    return this.companyService.createCompany(createCompanyDto, token);
   }
   // 전체회사찾기
   @Get()
@@ -35,13 +35,13 @@ export class CompanyController {
   }
   // id로 회사 찾기
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.companyService.findOneCompany(+id);
+  findOneCompany(@Param('id') id: string) {
+    return this.companyService.findOneCompany(Number(id));
   }
-  // 이름으로 회사 찾기
+  // // 이름으로 회사 찾기
   @Get(':name')
   findOneByName(@Param('name') name: string) {
-    return this.companyService.findONeByName(name);
+    return this.companyService.findOneByName(name);
   }
   //회사정보수정
   @Patch(':id')

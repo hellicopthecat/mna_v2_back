@@ -24,15 +24,28 @@ export class AssetsLiabilitiesService {
       await this.companyAssetService.findCompanyAsset(companyAssetId);
     const newAssets = this.assetsLiabilityRepo.create({
       ...createAssetsLiabilityDto,
+      current: createAssetsLiabilityDto.current === 'on' ? true : false,
+      assetOrLiability:
+        createAssetsLiabilityDto.assetOrLiability === 'on' ? true : false,
       companyAsset,
     });
     await this.assetsLiabilityRepo.save(newAssets);
 
-    return { msg: '자산이 생성되었습니다.' };
+    return { msg: true };
   }
 
   async findOne(asssetId: number) {
-    return this.assetsLiabilityRepo.findOneBy({ id: asssetId });
+    return await this.assetsLiabilityRepo.findOneBy({ id: asssetId });
+  }
+  async findTotalAsset(assetId: number) {
+    const totalAsset = await this.assetsLiabilityRepo
+      .createQueryBuilder('asset')
+      .where('asset.companyAsset.id = :id', { id: assetId })
+      .skip(0)
+      .take(5)
+      .orderBy('id', 'DESC')
+      .getMany();
+    return totalAsset;
   }
 
   async update(
@@ -41,7 +54,12 @@ export class AssetsLiabilitiesService {
   ) {
     await this.assetsLiabilityRepo.update(
       { id: assetId },
-      updateAssetsLiabilityDto,
+      {
+        ...updateAssetsLiabilityDto,
+        current: updateAssetsLiabilityDto.current === 'on' ? true : false,
+        assetOrLiability:
+          updateAssetsLiabilityDto.assetOrLiability === 'on' ? true : false,
+      },
     );
     return { msg: '자산이 업데이트 되었습니다.' };
   }

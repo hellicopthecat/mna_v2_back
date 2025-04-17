@@ -12,9 +12,11 @@ import { CompanyMangerController } from './company-manager/company-manger.contro
 import { CompanyConnectController } from './company-connect/company-connect.controller';
 import { CompanyConnectService } from './company-connect/company-connect.service';
 import { Product } from 'src/product/entities/product.entity';
+import { AuthModule } from 'src/auth/auth.module';
+import { TokenService } from 'src/auth/token.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Company, User, Product])],
+  imports: [TypeOrmModule.forFeature([Company, User, Product]), AuthModule],
   controllers: [
     CompanyController,
     CompanyWorkerController,
@@ -27,6 +29,7 @@ import { Product } from 'src/product/entities/product.entity';
     CompanyManagerService,
     CompanyWorkerService,
     CompanyConnectService,
+    TokenService,
   ],
   exports: [CompanyService],
 })
