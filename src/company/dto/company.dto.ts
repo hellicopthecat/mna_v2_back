@@ -1,5 +1,6 @@
 import { Expose, Type } from 'class-transformer';
 import { UserDto } from 'src/user/dto/user.dto';
+import { VacationDto } from 'src/vacation/dto/vacation.dto';
 
 export class CompanyDto {
   @Expose()
@@ -35,4 +36,25 @@ export class CompanyDto {
   @Expose()
   @Type(() => UserDto)
   companyOwner: UserDto;
+  @Expose()
+  @Type(() => UserDto)
+  companyManager: UserDto[];
+  @Expose()
+  @Type(() => UserDto)
+  companyWorker: UserDto[];
+  @Expose()
+  @Type(() => VacationDto)
+  workerVacation: VacationDto[];
+  @Expose()
+  @Type(() => CompanyDto)
+  connectedCompany: CompanyDto[];
+  @Expose()
+  @Type(() => CompanyDto)
+  connectingCompany: CompanyDto[];
+  // @OneToOne(() => CompanyAsset, (companyAsset) => companyAsset.company)
+  // companyAssets: CompanyAsset;
+  // @OneToMany(() => Product, (product) => product.company)
+  // companyProduct: Product[];
+  // @OneToMany(() => Salary, (salary) => salary.company)
+  // workerSalary: Salary[];
 }

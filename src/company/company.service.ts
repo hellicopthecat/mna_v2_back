@@ -32,6 +32,7 @@ export class CompanyService {
       ...createCompanyDto,
       companyOwner: user,
       companyManager: [user],
+      companyWorker: [user],
     });
     await this.companyRepo.save(company);
     return { userId: user.id };
@@ -52,7 +53,13 @@ export class CompanyService {
         connectedCompany: true,
         connectingCompany: true,
         companyProduct: true,
-        workerVacation: true,
+      },
+      select: {
+        companyManager: { id: true },
+        companyWorker: { id: true },
+        companyProduct: { id: true },
+        connectedCompany: { id: true },
+        connectingCompany: { id: true },
       },
     });
     if (!company) {
@@ -62,12 +69,13 @@ export class CompanyService {
   }
   // 이름으로 회사 찾기
   async findOneByName(name: string) {
-    const company = await this.companyRepo.findOneBy({ companyName: name });
+    const company = await this.companyRepo.findBy({ companyName: name });
     if (!company) {
       throw new NotFoundException('찾으시는 회사가 존재하지 않습니다.');
     }
     return company;
   }
+  //내 회사 찾기
   async findOwnCompany(id: number) {
     const ownedCompany = await this.companyRepo
       .createQueryBuilder('company')

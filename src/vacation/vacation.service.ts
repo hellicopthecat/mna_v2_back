@@ -6,27 +6,36 @@ import { Repository } from 'typeorm';
 import { Vacation } from './entities/vacation.entity';
 import { annualCalculator } from './vacation-util/vacation-util.util';
 import { UserService } from 'src/user/user.service';
+import { CompanyService } from 'src/company/company.service';
+import { TokenService } from 'src/auth/token.service';
 
 @Injectable()
 export class VacationService {
   constructor(
     @InjectRepository(Vacation) private vacationRepo: Repository<Vacation>,
     private readonly userService: UserService,
+    private readonly companyService: CompanyService,
+    private readonly tokenService: TokenService,
   ) {}
-  async createVacation(userId: number, createVacationDto: CreateVacationDto) {
-    const user = await this.userService.findOne(userId);
+  async createVacation(
+    companyId: number,
+    targetUserId: number,
+    createVacationDto: CreateVacationDto,
+  ) {
+    const company = await this.companyService.findOneCompany(companyId);
+    const user = await this.userService.findOne(targetUserId);
     const vacation = this.vacationRepo.create({
-      joinCompanyDate:
-        Date.now().toString() || createVacationDto.joinCompanyDate,
-      other: createVacationDto.other,
+      joinCompanyDate: createVacationDto.joinCompanyDate,
+      other: Number(createVacationDto.other),
       appearence: 0,
       annual: annualCalculator(createVacationDto.joinCompanyDate),
       restAnnualVacation: annualCalculator(createVacationDto.joinCompanyDate),
-      restOtherVacation: createVacationDto.other,
+      restOtherVacation: Number(createVacationDto.other),
       totalVacation:
         annualCalculator(createVacationDto.joinCompanyDate) +
-        createVacationDto.other,
+        Number(createVacationDto.other),
       user,
+      company,
     });
     await this.vacationRepo.save(vacation);
     return { msg: '휴가가 생성되었습니다.' };
@@ -54,7 +63,7 @@ export class VacationService {
       {
         joinCompanyDate:
           vacation.joinCompanyDate || updateVacationDto.joinCompanyDate,
-        other: vacation.other || updateVacationDto.other,
+        other: vacation.other || Number(updateVacationDto.other),
         annual:
           vacation.annual ||
           annualCalculator(updateVacationDto.joinCompanyDate + ''),
@@ -62,11 +71,11 @@ export class VacationService {
           vacation.restAnnualVacation ||
           annualCalculator(updateVacationDto.joinCompanyDate + ''),
         restOtherVacation:
-          vacation.restOtherVacation || updateVacationDto.other,
+          vacation.restOtherVacation || Number(updateVacationDto.other),
         totalVacation:
           vacation.totalVacation ||
           annualCalculator(updateVacationDto.joinCompanyDate + '') +
-            (updateVacationDto.other || 0),
+            (Number(updateVacationDto.other) || 0),
       },
     );
     return { msg: '휴가 모델이 업데이트되었습니다.' };

@@ -1,10 +1,10 @@
-import { IsNumber } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class CreateSalaryDto {
-  @IsNumber()
-  preTaxMonthlySalary: number;
-  @IsNumber()
-  familyCount: number;
-  @IsNumber()
-  childCount: number;
+  @IsString()
+  preTaxMonthlySalary: string;
+  @IsString()
+  familyCount: string;
+  @IsString()
+  childCount: string;
 }

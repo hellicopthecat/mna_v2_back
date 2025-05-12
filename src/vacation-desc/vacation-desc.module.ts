@@ -7,10 +7,19 @@ import { VacationService } from 'src/vacation/vacation.service';
 import { Vacation } from 'src/vacation/entities/vacation.entity';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/entities/user.entity';
+import { CompanyService } from 'src/company/company.service';
+import { Company } from 'src/company/entities/company.entity';
+import { TokenService } from 'src/auth/token.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([VacationDesc, Vacation, User])],
+  imports: [TypeOrmModule.forFeature([VacationDesc, Vacation, User, Company])],
   controllers: [VacationDescController],
-  providers: [VacationDescService, VacationService, UserService],
+  providers: [
+    VacationDescService,
+    VacationService,
+    UserService,
+    CompanyService,
+    TokenService,
+  ],
 })
 export class VacationDescModule {}

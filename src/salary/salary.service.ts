@@ -5,21 +5,30 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Salary } from './entities/salary.entity';
 import { UserService } from 'src/user/user.service';
-import { User } from 'src/user/entities/user.entity';
+import { CompanyService } from 'src/company/company.service';
 
 @Injectable()
 export class SalaryService {
   constructor(
     @InjectRepository(Salary) private salaryRepo: Repository<Salary>,
-    @InjectRepository(User) private userRepo: Repository<User>,
     private readonly userService: UserService,
+    private readonly companyService: CompanyService,
   ) {}
-  async createSalary(userId: number, createSalaryDto: CreateSalaryDto) {
-    const salary = this.salaryRepo.create(createSalaryDto);
-    await this.salaryRepo.save(salary);
+  async createSalary(
+    userId: number,
+    companyId: number,
+    createSalaryDto: CreateSalaryDto,
+  ) {
     const user = await this.userService.findOne(userId);
-    user.salary.push(salary);
-    await this.userRepo.save(user);
+    const company = await this.companyService.findOneCompany(companyId);
+    const salary = this.salaryRepo.create({
+      preTaxMonthlySalary: Number(createSalaryDto.preTaxMonthlySalary),
+      familyCount: Number(createSalaryDto.familyCount),
+      childCount: Number(createSalaryDto.childCount),
+      user,
+      company,
+    });
+    await this.salaryRepo.save(salary);
     return { msg: '휴가를 생성하였습니다.' };
   }
 
@@ -28,7 +37,14 @@ export class SalaryService {
   }
 
   async updateSalary(salaryId: number, updateSalaryDto: UpdateSalaryDto) {
-    await this.salaryRepo.update({ id: salaryId }, updateSalaryDto);
+    await this.salaryRepo.update(
+      { id: salaryId },
+      {
+        preTaxMonthlySalary: Number(updateSalaryDto.preTaxMonthlySalary),
+        familyCount: Number(updateSalaryDto.familyCount),
+        childCount: Number(updateSalaryDto.childCount),
+      },
+    );
     return { msg: '급여가 업데이트 되었습니다.' };
   }
 

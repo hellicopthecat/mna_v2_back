@@ -3,25 +3,31 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { VacationService } from './vacation.service';
 import { CreateVacationDto } from './dto/create-vacation.dto';
 import { UpdateVacationDto } from './dto/update-vacation.dto';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
+import { ManagerGuard } from 'src/guards/manager/manager.guard';
 
 @Controller('vacation')
+@UseGuards(AuthGuard)
+@UseGuards(ManagerGuard)
 export class VacationController {
   constructor(private readonly vacationService: VacationService) {}
 
-  @Post()
+  @Post(':companyId/:targetUserId')
   createVacation(
-    @Param('userId') userId: string,
+    @Param('companyId') companyId: string,
+    @Param('targetUserId') targetUserId: string,
     @Body() createVacationDto: CreateVacationDto,
   ) {
     return this.vacationService.createVacation(
-      Number(userId),
+      Number(companyId),
+      Number(targetUserId),
       createVacationDto,
     );
   }
@@ -36,7 +42,7 @@ export class VacationController {
     return this.vacationService.findOneVacation(+id);
   }
 
-  @Patch(':vacationId')
+  @Post(':vacationId')
   updateVacation(
     @Param('vacationId') vacationId: string,
     @Body() updateVacationDto: UpdateVacationDto,

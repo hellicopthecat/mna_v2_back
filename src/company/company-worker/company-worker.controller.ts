@@ -3,13 +3,14 @@ import {
   Delete,
   Get,
   Param,
-  Patch,
+  Post,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { CompanyWorkerService } from './company-worker.service';
 import { ManagerGuard } from 'src/guards/manager/manager.guard';
-import { AuthDecorator } from 'src/auth/auth-decorator/auth-decorator.decorator';
+import { Serialize } from 'src/interceptors/serialize/serialize.interceptor';
+import { UserDto } from 'src/user/dto/user.dto';
 
 @Controller('company-workers')
 @UseGuards(AuthGuard)
@@ -17,25 +18,9 @@ export class CompanyWorkerController {
   constructor(private readonly companyWorkerService: CompanyWorkerService) {}
   //회사 사원 불러오기
   @Get(':companyId')
+  @Serialize(UserDto)
   async getCompanyWorkers(@Param('companyId') comapnyId: string) {
     return await this.companyWorkerService.getCompanyWorkers(Number(comapnyId));
-  }
-  @Get(':companyId/vacations')
-  @UseGuards(ManagerGuard)
-  async getCompanyWorkersVacation(@Param('companyId') comapnyId: string) {
-    return await this.companyWorkerService.getCompanyWorkersVacation(
-      Number(comapnyId),
-    );
-  }
-  @Get(':companyId/myVacation')
-  async getThisCompanyVacation(
-    @Param('companyId') companyId: string,
-    @AuthDecorator() token: string,
-  ) {
-    return await this.companyWorkerService.getThisCompanyVacation(
-      Number(companyId),
-      token,
-    );
   }
   //사원 이름으로 조회
   @Get(':companyId')
@@ -49,15 +34,15 @@ export class CompanyWorkerController {
     );
   }
   //사원 등록
-  @Patch(':companyId')
+  @Post(':companyId/:workerId')
   @UseGuards(ManagerGuard)
   async registCompanyWorkers(
     @Param('companyId') comapnyId: string,
-    workerID: string,
+    @Param('workerId') workerId: string,
   ) {
     return await this.companyWorkerService.registCompanyWorkers(
       Number(comapnyId),
-      Number(workerID),
+      Number(workerId),
     );
   }
   //사원 등록 해제

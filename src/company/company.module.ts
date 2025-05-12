@@ -14,22 +14,35 @@ import { CompanyConnectService } from './company-connect/company-connect.service
 import { Product } from 'src/product/entities/product.entity';
 import { AuthModule } from 'src/auth/auth.module';
 import { TokenService } from 'src/auth/token.service';
+import { CompanyWorkerSalaryController } from './company-worker/company-workers-salary/company-workers-salary.controller';
+import { CompanyWorkerSalaryService } from './company-worker/company-workers-salary/company-workers-salary.service';
+import { Salary } from 'src/salary/entities/salary.entity';
+import { CompanyWorkersVacationService } from './company-worker/company-workers-vacation/company-workers-vacation.service';
+import { CompanyWorkersVacationController } from './company-worker/company-workers-vacation/company-workers-vacation.controller';
+import { Vacation } from 'src/vacation/entities/vacation.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Company, User, Product]), AuthModule],
+  imports: [
+    TypeOrmModule.forFeature([Company, User, Product, Salary, Vacation]),
+    AuthModule,
+  ],
   controllers: [
     CompanyController,
     CompanyWorkerController,
     CompanyMangerController,
     CompanyConnectController,
+    CompanyWorkerSalaryController,
+    CompanyWorkersVacationController,
   ],
   providers: [
-    CompanyService,
     UserService,
+    TokenService,
+    CompanyService,
     CompanyManagerService,
     CompanyWorkerService,
     CompanyConnectService,
-    TokenService,
+    CompanyWorkerSalaryService,
+    CompanyWorkersVacationService,
   ],
   exports: [CompanyService],
 })

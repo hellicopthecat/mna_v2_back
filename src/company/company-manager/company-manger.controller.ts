@@ -1,9 +1,18 @@
-import { Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { CompanyManagerService } from './company-manager.service';
 import { ManagerGuard } from 'src/guards/manager/manager.guard';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { Serialize } from 'src/interceptors/serialize/serialize.interceptor';
 import { UserDto } from 'src/user/dto/user.dto';
+import { AddManagerDto } from './dto/add-manager.dto';
 
 @Controller('company')
 @UseGuards(AuthGuard)
@@ -19,9 +28,16 @@ export class CompanyMangerController {
   async getCompanyManagerByName(@Param('id') id: string, name: string) {
     return this.companyManagerService.getCompanyManagerByName(Number(id), name);
   }
-  @Patch('add-manager/:id')
-  addManager(@Param('id') id: string, workerId: string) {
-    return this.companyManagerService.addManager(Number(id), Number(workerId));
+  @Get('exceptManager/:id')
+  async getExceptManager(@Param('id') id: string) {
+    return await this.companyManagerService.getExceptManager(Number(id));
+  }
+  @Post('addManager')
+  addManager(@Body() addManaerDto: AddManagerDto) {
+    return this.companyManagerService.addManager(
+      Number(addManaerDto.companyId),
+      Number(addManaerDto.workerId),
+    );
   }
   @Patch('manager/:id')
   removeManager(@Param('id') id: string, workerId: string) {

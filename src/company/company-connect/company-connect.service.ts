@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CompanyService } from '../company.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -10,6 +10,19 @@ export class CompanyConnectService {
     private readonly companyService: CompanyService,
     @InjectRepository(Company) private companyRepo: Repository<Company>,
   ) {}
+  async getConnectedCompany(id: number) {
+    const company = await this.companyRepo.findOne({
+      where: { id },
+      relations: { connectedCompany: true },
+    });
+    if (!company) {
+      throw new NotFoundException('찾으시는 회사가 없습니다.');
+    }
+    if (company.connectedCompany.length < 1) {
+      throw new NotFoundException('납품처로 등록된 회사가 없습니다.');
+    }
+    return company.connectedCompany;
+  }
   async connectCompany(id: number, t_companyID: number) {
     const myCompany = await this.companyService.findOneCompany(id);
     const t_company = await this.companyService.findOneCompany(t_companyID);

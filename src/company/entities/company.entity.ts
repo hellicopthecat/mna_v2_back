@@ -1,5 +1,6 @@
 import { CompanyAsset } from 'src/company-assets/entities/company-asset.entity';
 import { Product } from 'src/product/entities/product.entity';
+import { Salary } from 'src/salary/entities/salary.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Vacation } from 'src/vacation/entities/vacation.entity';
 import {
@@ -67,6 +68,6 @@ export class Company {
   companyProduct: Product[];
   @OneToMany(() => Vacation, (vacation) => vacation.company)
   workerVacation: Vacation[];
-
-  // workerSalary: [Salary]
+  @OneToMany(() => Salary, (salary) => salary.company)
+  workerSalary: Salary[];
 }

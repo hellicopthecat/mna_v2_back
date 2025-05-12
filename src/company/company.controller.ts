@@ -38,8 +38,8 @@ export class CompanyController {
   findOneCompany(@Param('id') id: string) {
     return this.companyService.findOneCompany(Number(id));
   }
-  // // 이름으로 회사 찾기
-  @Get(':name')
+  // 이름으로 회사 찾기
+  @Get('findByName/:name')
   findOneByName(@Param('name') name: string) {
     return this.companyService.findOneByName(name);
   }
