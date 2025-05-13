@@ -39,9 +39,9 @@ export class CompanyController {
     return this.companyService.findOneCompany(Number(id));
   }
   // 이름으로 회사 찾기
-  @Get('findByName/:name')
-  findOneByName(@Param('name') name: string) {
-    return this.companyService.findOneByName(name);
+  @Get('findByName/:companyName')
+  findOneByName(@Param('companyName') companyName: string) {
+    return this.companyService.findOneByName(companyName);
   }
   //회사정보수정
   @Patch(':id')

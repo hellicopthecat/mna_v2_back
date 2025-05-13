@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Company } from './entities/company.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/user/user.service';
@@ -69,8 +69,13 @@ export class CompanyService {
   }
   // 이름으로 회사 찾기
   async findOneByName(name: string) {
-    const company = await this.companyRepo.findBy({ companyName: name });
+    const company = await this.companyRepo.findBy({
+      companyName: Like(`%${name}%`),
+    });
     if (!company) {
+      throw new NotFoundException('찾으시는 회사가 존재하지 않습니다.');
+    }
+    if (company.length < 1) {
       throw new NotFoundException('찾으시는 회사가 존재하지 않습니다.');
     }
     return company;
