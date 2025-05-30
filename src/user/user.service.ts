@@ -37,7 +37,7 @@ export class UserService {
     if (/\\/.test(userName)) {
       throw new BadRequestException('\\ 는 사용할수 없습니다.');
     }
-    const { userId } = await this.tokenService.verifiedRefreshToken(token);
+    const { userId } = await this.tokenService.verifiedAccessToken(token);
     const user = await this.userRepository.findBy({
       lastName: Like(`%${userName}%`),
     });

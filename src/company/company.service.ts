@@ -26,8 +26,8 @@ export class CompanyService {
     if (existsCompany) {
       throw new BadRequestException('존재하는 회사입니다.');
     }
-    const verifiedToken = await this.tokenService.verifiedRefreshToken(token);
-    const user = await this.userService.findOne(Number(verifiedToken.userId));
+    const { userId } = await this.tokenService.verifiedAccessToken(token);
+    const user = await this.userService.findOne(Number(userId));
     const company = this.companyRepo.create({
       ...createCompanyDto,
       companyOwner: user,

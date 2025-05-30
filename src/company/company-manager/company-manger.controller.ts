@@ -14,13 +14,13 @@ import { Serialize } from 'src/interceptors/serialize/serialize.interceptor';
 import { UserDto } from 'src/user/dto/user.dto';
 import { AddManagerDto } from './dto/add-manager.dto';
 
-@Controller('company')
+@Controller('company-manager')
 @UseGuards(AuthGuard)
 @UseGuards(ManagerGuard)
 @Serialize(UserDto)
 export class CompanyMangerController {
   constructor(private readonly companyManagerService: CompanyManagerService) {}
-  @Get('manager/:id')
+  @Get(':id')
   async getCompanyManager(@Param('id') id: string) {
     return this.companyManagerService.getCompanyManager(Number(id));
   }

@@ -52,7 +52,7 @@ export class CompanyWorkerSalaryService {
 
   //현 회사 나의 급여정보보기
   async getMySalaryThisCompany(companId: number, token: string) {
-    const { userId } = await this.tokenService.verifiedRefreshToken(token);
+    const { userId } = await this.tokenService.verifiedAccessToken(token);
     const mySalaryThisCompany = await this.salaryRepo.findOne({
       where: { user: { id: Number(userId) }, company: { id: companId } },
       relations: { user: true, company: true },

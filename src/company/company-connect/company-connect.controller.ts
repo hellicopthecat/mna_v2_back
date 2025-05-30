@@ -23,8 +23,10 @@ export class CompanyConnectController {
     return await this.companyConnectService.getConnectedCompany(Number(id));
   }
 
-  @Get()
-  async getConnectingCompany() {}
+  @Get('connecting/:id')
+  async getConnectingCompany(@Param('id') id: string) {
+    return await this.companyConnectService.getConnectingCompany(Number(id));
+  }
 
   @Put('connect')
   @UseGuards(ManagerGuard)

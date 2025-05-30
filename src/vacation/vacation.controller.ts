@@ -42,7 +42,7 @@ export class VacationController {
     return this.vacationService.findOneVacation(+id);
   }
 
-  @Post(':vacationId')
+  @Post('edit/:vacationId')
   updateVacation(
     @Param('vacationId') vacationId: string,
     @Body() updateVacationDto: UpdateVacationDto,

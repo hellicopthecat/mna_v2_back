@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -11,6 +12,7 @@ import { CompanyWorkerService } from './company-worker.service';
 import { ManagerGuard } from 'src/guards/manager/manager.guard';
 import { Serialize } from 'src/interceptors/serialize/serialize.interceptor';
 import { UserDto } from 'src/user/dto/user.dto';
+import { RegistWorkerDto } from './dto/regist-worker.dto';
 
 @Controller('company-workers')
 @UseGuards(AuthGuard)
@@ -34,15 +36,12 @@ export class CompanyWorkerController {
     );
   }
   //사원 등록
-  @Post(':companyId/:workerId')
+  @Post('regist')
   @UseGuards(ManagerGuard)
-  async registCompanyWorkers(
-    @Param('companyId') comapnyId: string,
-    @Param('workerId') workerId: string,
-  ) {
+  async registCompanyWorkers(@Body() registWorkerDto: RegistWorkerDto) {
     return await this.companyWorkerService.registCompanyWorkers(
-      Number(comapnyId),
-      Number(workerId),
+      Number(registWorkerDto.companyId),
+      Number(registWorkerDto.workerId),
     );
   }
   //사원 등록 해제

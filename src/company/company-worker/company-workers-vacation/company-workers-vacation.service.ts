@@ -45,7 +45,7 @@ export class CompanyWorkersVacationService {
   }
   //이 직장의 나의 휴가 보기
   async getMyVacationAtThisCompany(companyId: number, token: string) {
-    const { userId } = await this.tokenService.verifiedRefreshToken(token);
+    const { userId } = await this.tokenService.verifiedAccessToken(token);
     const vacation = await this.vacationRepo.findOne({
       where: { company: { id: companyId }, user: { id: +userId } },
       relations: { user: true, company: true },

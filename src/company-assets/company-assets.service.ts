@@ -32,7 +32,7 @@ export class CompanyAssetsService {
       where: {
         id: assetId,
       },
-      relations: { totalAssetsDesc: true },
+      relations: { totalAssetsDesc: true, allIncomeExpend: true },
     });
     if (!companyAsset) {
       throw new NotFoundException('자산정보를 생성하세요.');

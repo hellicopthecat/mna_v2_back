@@ -5,20 +5,38 @@ import { JwtService } from '@nestjs/jwt';
 export class TokenService {
   constructor(private readonly jwtService: JwtService) {}
   async generateAccessToken(payload: { [key: string]: number | string }) {
-    return await this.jwtService.signAsync(payload);
+    return await this.jwtService.signAsync(
+      { ...payload, createdAt: new Date() },
+      {
+        secret: process.env.ACCESS_SECRET,
+      },
+    );
   }
   async generateRefreshToken(payload: { [key: string]: number | string }) {
-    return await this.jwtService.signAsync(payload, {
-      secret: process.env.REFRESH_SECRET,
+    return await this.jwtService.signAsync(
+      { ...payload, createdAt: new Date() },
+      {
+        secret: process.env.REFRESH_SECRET,
+      },
+    );
+  }
+  async verifiedAccessToken(
+    payload: string,
+  ): Promise<{ userId: string; createdAt: Date }> {
+    return await this.jwtService.verifyAsync<{
+      userId: string;
+      createdAt: Date;
+    }>(payload, {
+      secret: process.env.ACCESS_SECRET,
     });
   }
-  async verifiedAccessToken(payload: string): Promise<{ userId: string }> {
-    return await this.jwtService.verifyAsync(payload);
-  }
-  async verifiedRefreshToken(payload: string): Promise<{ userId: string }> {
+  async verifiedRefreshToken(
+    payload: string,
+  ): Promise<{ userId: string; createdAt: Date }> {
     try {
       const verifiedToken = await this.jwtService.verifyAsync<{
         userId: string;
+        createdAt: Date;
       }>(payload, {
         secret: process.env.REFRESH_SECRET,
       });

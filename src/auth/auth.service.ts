@@ -71,8 +71,9 @@ export class AuthService {
     return { userId: user.id, accessToken, refreshToken };
   }
 
-  async logOut(userId: number) {
-    await this.userService.update(userId, { refreshToken: '' });
+  async logOut(token: string) {
+    const { userId } = await this.tokenService.verifiedRefreshToken(token);
+    await this.userService.update(+userId, { refreshToken: '' });
     return { msg: '로그아웃되었습니다.' };
   }
 
@@ -80,7 +81,7 @@ export class AuthService {
     if (!token) {
       throw new UnauthorizedException('로그인을 해주세요.');
     }
-    const { userId } = await this.tokenService.verifiedRefreshToken(token);
+    const { userId } = await this.tokenService.verifiedAccessToken(token);
     const user = await this.userService.findOne(Number(userId));
     return user;
   }
@@ -88,7 +89,7 @@ export class AuthService {
     if (!token) {
       throw new UnauthorizedException('로그인을 해주세요.');
     }
-    const { userId } = await this.tokenService.verifiedRefreshToken(token);
+    const { userId } = await this.tokenService.verifiedAccessToken(token);
     const company = this.companyService.findOwnCompany(Number(userId));
     return company;
   }

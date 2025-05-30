@@ -6,7 +6,6 @@ import { AuthDecorator } from './auth-decorator/auth-decorator.decorator';
 import { UserDto } from 'src/user/dto/user.dto';
 import { Serialize } from 'src/interceptors/serialize/serialize.interceptor';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
-import { LogOutDto } from './dto/log-out.dto';
 import { CompanyDto } from 'src/company/dto/company.dto';
 
 @Controller('auth')
@@ -29,8 +28,8 @@ export class AuthController {
 
   @Post('/logout')
   @UseGuards(AuthGuard)
-  async logOut(@Body() logOutDto: LogOutDto) {
-    return await this.authService.logOut(Number(logOutDto.userId));
+  async logOut(@AuthDecorator() token: string) {
+    return await this.authService.logOut(token);
   }
 
   @Get('/myprofile')

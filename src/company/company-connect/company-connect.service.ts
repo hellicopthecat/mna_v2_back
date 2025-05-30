@@ -44,6 +44,19 @@ export class CompanyConnectService {
     }
     return company.connectedCompany;
   }
+  async getConnectingCompany(id: number) {
+    const company = await this.companyRepo.findOne({
+      where: { id },
+      relations: { connectingCompany: true },
+    });
+    if (!company) {
+      throw new NotFoundException('찾으시는 회사가 없습니다.');
+    }
+    if (company.connectingCompany.length < 1) {
+      throw new NotFoundException('발품처로 등록된 회사가 없습니다.');
+    }
+    return company.connectingCompany;
+  }
   async connectCompany(id: number, t_companyID: number) {
     const myCompany = await this.companyRepo.findOne({
       where: { id },

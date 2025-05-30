@@ -60,7 +60,6 @@ export class Company {
   @JoinTable()
   connectedCompany: Company[];
   @ManyToMany(() => Company, (company) => company.connectedCompany)
-  @JoinTable()
   connectingCompany: Company[];
   @OneToOne(() => CompanyAsset, (companyAsset) => companyAsset.company)
   companyAssets: CompanyAsset;
