@@ -56,7 +56,6 @@ export class AuthService {
     if (!user) {
       throw new NotFoundException('유저가 존재하지 않습니다.');
     }
-
     const ok = await deCryptPassword(loginDto.password, user.password);
     if (!ok) {
       throw new BadRequestException('비밀번호가 일치하지 않습니다.');
@@ -72,7 +71,7 @@ export class AuthService {
   }
 
   async logOut(token: string) {
-    const { userId } = await this.tokenService.verifiedRefreshToken(token);
+    const { userId } = await this.tokenService.verifiedAccessToken(token);
     await this.userService.update(+userId, { refreshToken: '' });
     return { msg: '로그아웃되었습니다.' };
   }

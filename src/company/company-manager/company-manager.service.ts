@@ -1,5 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { TokenService } from 'src/auth/token.service';
 import { Company } from 'src/company/entities/company.entity';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
@@ -7,8 +12,9 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class CompanyManagerService {
   constructor(
-    private readonly userService: UserService,
     @InjectRepository(Company) private companyRepo: Repository<Company>,
+    private readonly userService: UserService,
+    private readonly tokenService: TokenService,
   ) {}
   //매니저조회
   async getCompanyManager(id: number) {
@@ -70,5 +76,22 @@ export class CompanyManagerService {
     );
     await this.companyRepo.save(company);
     return { msg: '매니저가 성공적으로 삭제되었습니다.' };
+  }
+  async amImanager(token: string, companyId: number) {
+    const { userId } = await this.tokenService.verifiedAccessToken(token);
+    if (!userId) {
+      throw new UnauthorizedException('유저가 로그인되어있지 않습니다.');
+    }
+    const company = await this.companyRepo.findOne({
+      where: { id: companyId },
+      relations: { companyManager: true },
+    });
+    if (!company) {
+      throw new NotFoundException('존재하지 않는 회사입니다.');
+    }
+    const isManager = company.companyManager.some(
+      (manager) => manager.id === +userId,
+    );
+    return isManager;
   }
 }

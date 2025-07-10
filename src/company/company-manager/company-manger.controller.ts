@@ -13,22 +13,25 @@ import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { Serialize } from 'src/interceptors/serialize/serialize.interceptor';
 import { UserDto } from 'src/user/dto/user.dto';
 import { AddManagerDto } from './dto/add-manager.dto';
+import { AuthDecorator } from 'src/auth/auth-decorator/auth-decorator.decorator';
 
 @Controller('company-manager')
 @UseGuards(AuthGuard)
 @UseGuards(ManagerGuard)
-@Serialize(UserDto)
 export class CompanyMangerController {
   constructor(private readonly companyManagerService: CompanyManagerService) {}
   @Get(':id')
+  @Serialize(UserDto)
   async getCompanyManager(@Param('id') id: string) {
     return this.companyManagerService.getCompanyManager(Number(id));
   }
   @Get('manager/:id')
+  @Serialize(UserDto)
   async getCompanyManagerByName(@Param('id') id: string, name: string) {
     return this.companyManagerService.getCompanyManagerByName(Number(id), name);
   }
   @Get('exceptManager/:id')
+  @Serialize(UserDto)
   async getExceptManager(@Param('id') id: string) {
     return await this.companyManagerService.getExceptManager(Number(id));
   }
@@ -45,5 +48,9 @@ export class CompanyMangerController {
       Number(id),
       Number(workerId),
     );
+  }
+  @Get('isManager/:id')
+  async amImanager(@AuthDecorator() token: string, @Param('id') id: string) {
+    return await this.companyManagerService.amImanager(token, Number(id));
   }
 }
