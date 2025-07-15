@@ -9,6 +9,7 @@ export class TokenService {
       { ...payload, createdAt: new Date() },
       {
         secret: process.env.ACCESS_SECRET,
+        expiresIn: '1d',
       },
     );
   }
@@ -17,9 +18,11 @@ export class TokenService {
       { ...payload, createdAt: new Date() },
       {
         secret: process.env.REFRESH_SECRET,
+        expiresIn: '7d',
       },
     );
   }
+
   async verifiedAccessToken(
     payload: string,
   ): Promise<{ userId: string; createdAt: Date }> {
@@ -30,6 +33,7 @@ export class TokenService {
       secret: process.env.ACCESS_SECRET,
     });
   }
+
   async verifiedRefreshToken(
     payload: string,
   ): Promise<{ userId: string; createdAt: Date }> {
