@@ -24,7 +24,9 @@ export class CompanyAsset {
   createdAt: Date;
   @UpdateDateColumn()
   updateAt: Date;
-  @OneToOne(() => Company, (company) => company.companyAssets)
+  @OneToOne(() => Company, (company) => company.companyAssets, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   company: Company;
   @Column()
@@ -41,6 +43,9 @@ export class CompanyAsset {
     (assetLiability) => assetLiability.companyAsset,
   )
   totalAssetsDesc: AssetsLiability[]; // 자산 및 부채 내역
+  // 수입지출항목
+  @OneToMany(() => IncomeExpend, (ie) => ie.companyAsset)
+  allIncomeExpend: IncomeExpend[];
   /* computed */
   // 자산 및 부채 금액
   @Expose()
@@ -192,10 +197,6 @@ export class CompanyAsset {
       BigInt(this.budget) + BigInt(this.netAssets) - BigInt(this.liabilities);
     return total.toString();
   }
-  // 수입지출항목
-  @OneToMany(() => IncomeExpend, (ie) => ie.companyAsset)
-  allIncomeExpend: IncomeExpend[];
-
   //수입항목
   @Expose()
   get incomeModel(): IncomeExpend[] {

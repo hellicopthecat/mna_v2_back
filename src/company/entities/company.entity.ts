@@ -48,12 +48,14 @@ export class Company {
   bname2: string;
   @Column()
   jibunAddress: string;
-  @ManyToOne(() => User, (user) => user.ownedCompany)
+  @ManyToOne(() => User, (user) => user.ownedCompany, { onDelete: 'CASCADE' })
   companyOwner: User;
-  @ManyToMany(() => User, (user) => user.managedCompany)
+  @ManyToMany(() => User, (user) => user.managedCompany, {
+    onDelete: 'CASCADE',
+  })
   @JoinTable()
   companyManager: User[];
-  @ManyToMany(() => User, (user) => user.workAtCompany)
+  @ManyToMany(() => User, (user) => user.workAtCompany, { onDelete: 'CASCADE' })
   @JoinTable()
   companyWorker: User[];
   @ManyToMany(() => Company, (company) => company.connectingCompany)

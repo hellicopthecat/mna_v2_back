@@ -34,7 +34,7 @@ export class Vacation {
   totalVacation: number;
   @OneToMany(() => VacationDesc, (desc) => desc.vacation)
   description: VacationDesc[];
-  @ManyToOne(() => User, (user) => user.vacation)
+  @ManyToOne(() => User, (user) => user.vacation, { onDelete: 'CASCADE' })
   user: User;
   @ManyToOne(() => Company, (company) => company.workerVacation)
   company: Company;

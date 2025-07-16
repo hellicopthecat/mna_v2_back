@@ -34,8 +34,10 @@ export class Product {
   itemPrice: number;
   @Column()
   itemDesc: string;
-  @ManyToOne(() => Company, (company) => company.companyProduct)
+  @ManyToOne(() => Company, (company) => company.companyProduct, {
+    onDelete: 'CASCADE',
+  })
   company: Company;
-  @OneToOne(() => IncomeExpend, (ie) => ie.product)
+  @OneToOne(() => IncomeExpend, (ie) => ie.product, { onDelete: 'CASCADE' })
   incomeExpend: IncomeExpend;
 }

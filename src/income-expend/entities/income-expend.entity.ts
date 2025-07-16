@@ -42,9 +42,13 @@ export class IncomeExpend {
     default: TPaymentSwitch.NONPAID,
   })
   paymentsDone: TPaymentSwitch;
-  @ManyToOne(() => CompanyAsset, (asset) => asset.allIncomeExpend)
+  @ManyToOne(() => CompanyAsset, (asset) => asset.allIncomeExpend, {
+    onDelete: 'CASCADE',
+  })
   companyAsset: CompanyAsset;
-  @OneToOne(() => Product, (product) => product.incomeExpend, { cascade: true })
+  @OneToOne(() => Product, (product) => product.incomeExpend, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   product: Product;
 }

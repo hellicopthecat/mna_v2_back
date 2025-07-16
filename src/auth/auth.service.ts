@@ -75,7 +75,15 @@ export class AuthService {
     await this.userService.update(+userId, { refreshToken: '' });
     return { msg: '로그아웃되었습니다.' };
   }
+  async regenerateAccessToken(token: string) {
+    const { userId } = await this.tokenService.verifiedRefreshToken(token);
+    if (!userId) {
+      throw new UnauthorizedException('로그인을 해주세요.');
+    }
+    const accessToken = await this.tokenService.generateAccessToken({ userId });
 
+    return { token: accessToken };
+  }
   async getMyProfile(token: string) {
     if (!token) {
       throw new UnauthorizedException('로그인을 해주세요.');

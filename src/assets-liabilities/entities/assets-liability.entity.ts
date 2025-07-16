@@ -28,6 +28,8 @@ export class AssetsLiability {
   assetOrLiability: boolean; // true = 자산  or false = 부채
   @Column({ type: 'decimal', precision: 20, scale: 0 })
   assetValue: string;
-  @ManyToOne(() => CompanyAsset, (asset) => asset.totalAssetsDesc)
+  @ManyToOne(() => CompanyAsset, (asset) => asset.totalAssetsDesc, {
+    onDelete: 'CASCADE',
+  })
   companyAsset: CompanyAsset;
 }

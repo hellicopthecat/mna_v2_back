@@ -95,7 +95,7 @@ export class Salary {
   get childTax(): number {
     return childTaxFn(this.childCount);
   }
-  @ManyToOne(() => User, (user) => user.salary)
+  @ManyToOne(() => User, (user) => user.salary, { onDelete: 'CASCADE' })
   user: User;
   @ManyToOne(() => Company, (company) => company.workerSalary)
   company: Company;

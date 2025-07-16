@@ -32,6 +32,11 @@ export class AuthController {
     return await this.authService.logOut(token);
   }
 
+  @Get('/regenerateAccess')
+  async regenerateAccess(@AuthDecorator() token: string) {
+    return await this.authService.regenerateAccessToken(token);
+  }
+
   @Get('/myprofile')
   @UseGuards(AuthGuard)
   @Serialize(UserDto)

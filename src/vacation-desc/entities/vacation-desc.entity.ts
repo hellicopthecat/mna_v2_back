@@ -30,6 +30,8 @@ export class VacationDesc {
   day: number;
   @Column()
   description: string;
-  @ManyToOne(() => Vacation, (vacation) => vacation.description)
+  @ManyToOne(() => Vacation, (vacation) => vacation.description, {
+    onDelete: 'CASCADE',
+  })
   vacation: Vacation;
 }

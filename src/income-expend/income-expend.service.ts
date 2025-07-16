@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateIncomeExpendDto } from './dto/create-income-expend.dto';
 import { UpdateIncomeExpendDto } from './dto/update-income-expend.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -30,8 +30,12 @@ export class IncomeExpendService {
     return { msg: '수입지출서를 작성했습니다.' };
   }
 
-  async findOneInEx(companyId: number) {
-    return await this.incomeExpendRepo.findOneBy({ id: companyId });
+  async findOneInEx(inexId: number) {
+    const inex = await this.incomeExpendRepo.findOneBy({ id: inexId });
+    if (!inex) {
+      throw new NotFoundException('수입지출서를 찾을 수 없습니다.');
+    }
+    return inex;
   }
   async findTotalInEx(assetId: number) {
     const data = await this.incomeExpendRepo
@@ -58,8 +62,8 @@ export class IncomeExpendService {
   }
 
   async removeInEx(ieId: number) {
-    await this.findOneInEx(ieId);
-    await this.incomeExpendRepo.delete({ id: ieId });
+    const inex = await this.findOneInEx(ieId);
+    await this.incomeExpendRepo.delete({ id: inex.id });
     return { msg: '수입지술서가 삭제되었습니다.' };
   }
 }
