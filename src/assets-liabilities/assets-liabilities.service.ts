@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAssetsLiabilityDto } from './dto/create-assets-liability.dto';
 import { UpdateAssetsLiabilityDto } from './dto/update-assets-liability.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -35,7 +35,11 @@ export class AssetsLiabilitiesService {
   }
 
   async findOne(asssetId: number) {
-    return await this.assetsLiabilityRepo.findOneBy({ id: asssetId });
+    const asset = await this.assetsLiabilityRepo.findOneBy({ id: asssetId });
+    if (!asset) {
+      throw new NotFoundException('자산을 찾을 수 없습니다.');
+    }
+    return asset;
   }
   async findTotalAsset(assetId: number) {
     const totalAsset = await this.assetsLiabilityRepo
@@ -65,7 +69,11 @@ export class AssetsLiabilitiesService {
   }
 
   async remove(assetId: number) {
-    await this.assetsLiabilityRepo.delete({ id: assetId });
+    const asset = await this.findOne(assetId);
+    if (!asset) {
+      throw new NotFoundException('자산을 찾을 수 없습니다.');
+    }
+    await this.assetsLiabilityRepo.delete({ id: asset.id });
     return { msg: '자산이 삭제되었습니다.' };
   }
 }
