@@ -11,6 +11,7 @@ import { AssetsLiability } from 'src/assets-liabilities/entities/assets-liabilit
 import { IncomeExpendService } from 'src/income-expend/income-expend.service';
 import { IncomeExpend } from 'src/income-expend/entities/income-expend.entity';
 import { TokenService } from 'src/auth/token.service';
+import { Product } from 'src/product/entities/product.entity';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { TokenService } from 'src/auth/token.service';
       IncomeExpend,
       Company,
       User,
+      Product,
     ]),
   ],
   controllers: [CompanyAssetsController],

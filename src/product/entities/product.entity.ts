@@ -38,6 +38,6 @@ export class Product {
     onDelete: 'CASCADE',
   })
   company: Company;
-  @OneToOne(() => IncomeExpend, (ie) => ie.product, { onDelete: 'CASCADE' })
+  @OneToOne(() => IncomeExpend, (ie) => ie.product)
   incomeExpend: IncomeExpend;
 }

@@ -10,10 +10,17 @@ import { User } from 'src/user/entities/user.entity';
 import { CompanyAsset } from 'src/company-assets/entities/company-asset.entity';
 import { CompanyAssetsService } from 'src/company-assets/company-assets.service';
 import { TokenService } from 'src/auth/token.service';
+import { Product } from 'src/product/entities/product.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([IncomeExpend, Company, User, CompanyAsset]),
+    TypeOrmModule.forFeature([
+      IncomeExpend,
+      Company,
+      User,
+      CompanyAsset,
+      Product,
+    ]),
   ],
   controllers: [IncomeExpendController],
   providers: [

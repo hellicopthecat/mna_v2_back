@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -31,6 +31,7 @@ export class ProductService {
       businessDesc: createProductDto.itemDesc,
       paymentType: createProductDto.paymentType,
       paymentsDone: createProductDto.paymentsDone,
+      companyAsset: company.companyAssets,
     });
     await this.incomeExpendRepo.save(incomeExpend);
 
@@ -51,7 +52,14 @@ export class ProductService {
   }
 
   async findOneProduct(id: number) {
-    return await this.productRepo.findOneBy({ id });
+    const product = await this.productRepo.findOne({
+      where: { id },
+      relations: ['incomeExpend'],
+    });
+    if (!product) {
+      throw new NotFoundException('상품을 찾을 수 없습니다.');
+    }
+    return product;
   }
   async findTotalProduct(id: number) {
     const products = await this.productRepo
@@ -67,37 +75,49 @@ export class ProductService {
   }
 
   async updateProduct(productId: number, updateProductDto: UpdateProductDto) {
+    const product = await this.productRepo.findOne({
+      where: { id: productId },
+    });
+    if (!product) {
+      throw new NotFoundException('상품을 찾을 수 없습니다.');
+    }
     await this.productRepo.update(
-      { id: productId },
+      { id: product.id },
       {
-        ...updateProductDto,
+        transactionTitle: updateProductDto.transactionTitle,
+        itemName: updateProductDto.itemName,
+        itemModelName: updateProductDto.itemModelName,
+        itemPhoto: updateProductDto.itemPhoto,
+        itemType: updateProductDto.itemType,
+        itemDesc: updateProductDto.itemDesc,
         itemPrice: Number(
           updateProductDto.itemPrice === '0' ? 1 : updateProductDto.itemPrice,
         ),
         itemCount: Number(
           updateProductDto.itemCount === '0' ? 1 : updateProductDto.itemCount,
         ),
-        incomeExpend: {
-          cost:
-            Number(
-              updateProductDto.itemPrice === '0'
-                ? 1
-                : updateProductDto.itemPrice,
-            ) *
-            Number(
-              updateProductDto.itemCount === '0'
-                ? 1
-                : updateProductDto.itemCount,
-            ),
-          paymentType: updateProductDto.paymentType,
-          paymentsDone: updateProductDto.paymentsDone,
-        },
+      },
+    );
+    await this.incomeExpendRepo.update(
+      { id: product.incomeExpend.id },
+      {
+        cost:
+          Number(
+            updateProductDto.itemPrice === '0' ? 1 : updateProductDto.itemPrice,
+          ) *
+          Number(
+            updateProductDto.itemCount === '0' ? 1 : updateProductDto.itemCount,
+          ),
+        paymentType: updateProductDto.paymentType,
+        incomeTrue: updateProductDto.incomeTrue === 'income' ? true : false,
+        paymentsDone: updateProductDto.paymentsDone,
       },
     );
     return { msg: '상품 업데이트가 완료되었습니다.' };
   }
 
-  removeProduct(incomeExpendId: number) {
-    return this.incomeExpendRepo.delete({ id: incomeExpendId });
+  async removeProduct(productId: number) {
+    await this.productRepo.delete({ id: productId });
+    return { msg: '상품이 삭제되었습니다.' };
   }
 }
