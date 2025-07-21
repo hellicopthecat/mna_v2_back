@@ -26,12 +26,19 @@ export class TokenService {
   async verifiedAccessToken(
     payload: string,
   ): Promise<{ userId: string; createdAt: Date }> {
-    return await this.jwtService.verifyAsync<{
-      userId: string;
-      createdAt: Date;
-    }>(payload, {
-      secret: process.env.ACCESS_SECRET,
-    });
+    try {
+      const verifiedToken = await this.jwtService.verifyAsync<{
+        userId: string;
+        createdAt: Date;
+      }>(payload, {
+        secret: process.env.ACCESS_SECRET,
+      });
+      return verifiedToken;
+    } catch (error) {
+      const err = error as Error;
+      Logger.error('Access Token Verification Error', err.message);
+      throw new UnauthorizedException('인증실패');
+    }
   }
 
   async verifiedRefreshToken(

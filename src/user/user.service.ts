@@ -27,6 +27,7 @@ export class UserService {
   async findOne(id: number) {
     const user = await this.userRepository.findOne({
       where: { id },
+      relations: ['ownedCompany', 'workAtCompany'],
     });
     if (!user) {
       throw new NotFoundException('유저가 존재하지 않습니다.');

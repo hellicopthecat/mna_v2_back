@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
@@ -91,6 +92,22 @@ export class CompanyService {
       .getMany();
     return ownedCompany;
   }
+
+  // 내가 속한 회사 찾기
+  async findJoinedCompany(token: string) {
+    if (!token) {
+      throw new UnauthorizedException('로그인 해주세요.');
+    }
+    const { userId } = await this.tokenService.verifiedAccessToken(token);
+    const company = await this.companyRepo.find({
+      where: { companyOwner: { id: +userId } },
+    });
+    if (!company || company.length === 0) {
+      throw new NotFoundException('등록된 회사가 없습니다.');
+    }
+    return company;
+  }
+
   // 회사 편집
   async updateCompany(id: number, updateCompanyDto: UpdateCompanyDto) {
     const existsCompany = await this.findOneCompany(id);
@@ -99,6 +116,7 @@ export class CompanyService {
     }
     return { msg: '회사의 변경사항을 변경했습니다.' };
   }
+
   // 회사 삭제
   async removeCompany(id: number) {
     const company = await this.findOneCompany(id);
