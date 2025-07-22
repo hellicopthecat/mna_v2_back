@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -93,5 +94,23 @@ export class CompanyManagerService {
       (manager) => manager.id === +userId,
     );
     return isManager;
+  }
+
+  async isOwner(token: string, companyId: string) {
+    const { userId } = await this.tokenService.verifiedAccessToken(token);
+    if (!userId) {
+      throw new UnauthorizedException('유저가 로그인되어있지 않습니다.');
+    }
+    const company = await this.companyRepo.findOne({
+      where: { id: +companyId },
+      relations: ['companyOwner'],
+    });
+    if (!company) {
+      throw new NotFoundException('회사가 존재하지 않습니다.');
+    }
+    if (company.companyOwner.id !== +userId) {
+      throw new BadRequestException('권한이 없습니다.');
+    }
+    return company.companyOwner.id === +userId;
   }
 }

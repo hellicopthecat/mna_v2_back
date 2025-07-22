@@ -4,7 +4,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -46,9 +45,6 @@ export class IncomeExpend {
     onDelete: 'CASCADE',
   })
   companyAsset: CompanyAsset;
-  @OneToOne(() => Product, (product) => product.incomeExpend, {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn()
+  @OneToOne(() => Product, (product) => product.incomeExpend)
   product: Product;
 }

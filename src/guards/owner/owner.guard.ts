@@ -21,10 +21,9 @@ export class OwnerGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req: Request = context.switchToHttp().getRequest();
     const { id } = req.params as { id: string };
-    const refreshToken = (req.cookies as { REFRESH_TOKEN: string })
-      .REFRESH_TOKEN;
-    const { userId } =
-      await this.tokenService.verifiedRefreshToken(refreshToken);
+    const accessToken = req.headers.authorization?.split(' ')[1] as string;
+
+    const { userId } = await this.tokenService.verifiedAccessToken(accessToken);
 
     if (!userId) {
       throw new UnauthorizedException('로그인하세요.');

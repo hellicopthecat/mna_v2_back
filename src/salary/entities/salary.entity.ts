@@ -97,6 +97,8 @@ export class Salary {
   }
   @ManyToOne(() => User, (user) => user.salary, { onDelete: 'CASCADE' })
   user: User;
-  @ManyToOne(() => Company, (company) => company.workerSalary)
+  @ManyToOne(() => Company, (company) => company.workerSalary, {
+    onDelete: 'CASCADE',
+  })
   company: Company;
 }
