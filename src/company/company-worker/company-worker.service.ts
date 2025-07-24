@@ -45,6 +45,22 @@ export class CompanyWorkerService {
     return worker;
   }
 
+  //특정 사원 정보 보기
+  async getCompanyWorkerInfo(companyId: number, userId: number) {
+    const workers = await this.getCompanyWorkers(companyId);
+    const worker = workers.find((w) => w.id === userId);
+    if (!worker) {
+      throw new NotFoundException('회사에 등록되지 않은 사원입니다.');
+    }
+    const filtered = {
+      ...worker,
+      salary: worker.salary.filter((s) => s.company.id === companyId),
+      vacation: worker.vacation.filter((v) => v.company.id === companyId),
+    };
+
+    return filtered;
+  }
+
   //사원 등록
   async registCompanyWorkers(id: number, workerID: number) {
     const company = await this.companyRepo.findOne({
@@ -67,15 +83,18 @@ export class CompanyWorkerService {
   }
 
   //사원 삭제
-  async removeCompanyWorkers(id: number, workerID: number) {
+  async removeCompanyWorkers(id: number, workerId: number) {
     const company = await this.companyRepo.findOne({
       where: { id },
-      relations: { companyWorker: true },
+      relations: { companyWorker: true, companyOwner: true },
     });
     if (!company) {
       throw new NotFoundException('회사가 존재하지 않습니다.');
     }
-    const worker = await this.userService.findOne(workerID);
+    if (company.companyOwner.id === workerId) {
+      throw new BadRequestException('CEO는 해고할 수 없습니다.');
+    }
+    const worker = await this.userService.findOne(workerId);
     const exsitsWorker = company.companyWorker.some(
       (workerArgs) => workerArgs.id === worker.id,
     );

@@ -1,5 +1,6 @@
 import { Expose, Type } from 'class-transformer';
 import { CompanyDto } from 'src/company/dto/company.dto';
+import { SalaryDto } from 'src/salary/dto/salary.dto';
 import { Salary } from 'src/salary/entities/salary.entity';
 import { VacationDto } from 'src/vacation/dto/vacation.dto';
 
@@ -32,6 +33,7 @@ export class UserDto {
   @Type(() => CompanyDto)
   workAtCompany: CompanyDto[];
   @Expose()
+  @Type(() => SalaryDto)
   salary: Salary[];
   @Expose()
   @Type(() => VacationDto)

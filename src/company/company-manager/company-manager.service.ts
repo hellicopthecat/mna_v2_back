@@ -93,6 +93,9 @@ export class CompanyManagerService {
     const isManager = company.companyManager.some(
       (manager) => manager.id === +userId,
     );
+    if (!isManager) {
+      throw new BadRequestException('권한이 없습니다.');
+    }
     return isManager;
   }
 

@@ -1,9 +1,9 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -28,13 +28,26 @@ export class CompanyWorkerController {
   @Get(':companyId')
   async getCompanyWorkerByName(
     @Param('companyId') comapnyId: string,
-    name: string,
+    @Body() name: string,
   ) {
     return await this.companyWorkerService.getCompanyWorkersByName(
       Number(comapnyId),
       name,
     );
   }
+  // 특정 사원 정보 보기
+  @Get(':companyId/:userId')
+  @Serialize(UserDto)
+  async getCompanyWorkerInfo(
+    @Param('companyId') companyId: string,
+    @Param('userId') userId: string,
+  ) {
+    return await this.companyWorkerService.getCompanyWorkerInfo(
+      +companyId,
+      +userId,
+    );
+  }
+
   //사원 등록
   @Post('regist')
   @UseGuards(ManagerGuard)
@@ -45,15 +58,15 @@ export class CompanyWorkerController {
     );
   }
   //사원 등록 해제
-  @Delete(':companyId')
+  @Patch('unregist/:companyId/:workerId')
   @UseGuards(ManagerGuard)
   async removeCompanyWorkers(
     @Param('companyId') comapnyId: string,
-    workerID: string,
+    @Param('workerId') workerId: string,
   ) {
     return await this.companyWorkerService.removeCompanyWorkers(
       Number(comapnyId),
-      Number(workerID),
+      Number(workerId),
     );
   }
 }
